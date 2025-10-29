@@ -89,11 +89,17 @@ class block_section extends block_list {
                 $cminfo = \cm_info::create($cm);
 
                 if (!($url = $cm->url)) {
-                    $this->content->items[] = $cminfo->get_formatted_content();
+                    if ($this->page->user_is_editing()) {
+                        // Only show activity name when it is on edit mode
+                        $this->content->items[] = $cminfo->get_formatted_name();
+                    } else {
+                        // Normal view
+                        $this->content->items[] = $cminfo->get_formatted_content();
+                    }
                     $this->content->icons[] = '';
                 } else {
                     $linkcss = $cm->visible ? '' : ' class="dimmed" ';
-                    // Accessibility: incidental image - should be empty Alt text
+                    // Accessibility: incidental image – should be empty alt text.
                     $icon = '<img src="' . $cm->get_icon_url() . '" class="icon" alt="" />&nbsp;';
                     $this->content->items[] = '<a title="'.$cm->modplural.'" '.$linkcss.' '.
                             ' href="' . $url . '">' . $icon . $cminfo->get_formatted_name() . '</a>';
